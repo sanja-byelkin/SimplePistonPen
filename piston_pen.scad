@@ -102,7 +102,8 @@ pp_body_length= pp_screw_h*2 + pp_piston_head_h +   pp_back_thread1 * pp_interna
 
 pp_cup_d2= pp_external_belt_d + pp_boby_thread_pitch*1.18 + pp_tollerance*2;
 pp_cup_d1= pp_cup_d2 + 2 * pp_min_wall;
-pp_cup_wide_part_h= pp_cup_after_thread + pp_body_thread_size + pp_body_thread_interval + pp_min_wall ;
+pp_cup_h_walls= pp_min_wall*1.5;
+pp_cup_wide_part_h= pp_cup_after_thread + pp_body_thread_size + pp_body_thread_interval +pp_cup_h_walls;
 pp_cup_narrow_part_d= nibm_nib_d + pp_min_wall * 2;
 pp_gap= pp_cup_d1 + 1;
 
@@ -299,13 +300,13 @@ difference()
     union()
     {
         // Wide cylinder
-        translate([0, 0, pp_body_length - pp_cup_wide_part_h + pp_min_wall])
+        translate([0, 0, pp_body_length - pp_cup_wide_part_h + pp_cup_h_walls])
         cylinder(d= pp_cup_d1, h= pp_cup_wide_part_h, center= false);
         // Narrow cylynder
-        translate([0, 0, pp_body_length + pp_min_wall  - 0.01])
+        translate([0, 0, pp_body_length + pp_cup_h_walls  - 0.01])
         cylinder(d= pp_cup_narrow_part_d, h= nibm_nib_h + 0.01, center= false);
         // Thread ower narrow cylinder to put top part on
-        translate([0, 0, pp_body_length + pp_min_wall])
+        translate([0, 0, pp_body_length + pp_cup_h_walls])
         metric_thread_w_entry (diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h, internal=false, cut_bottom=true, cut_top=true);
     }
     // Cut
@@ -331,11 +332,11 @@ if (pp_show_cup1)
     translate ([pp_show_assemble ? 0 : - pp_gap, pp_show_assemble ? 0 : - pp_gap, - (pp_screw_h + pp_overlap_h)/2  - pp_back_thread1*pp_internal_thread_h_ratio] )
 difference()
 {
-    base= pp_body_length + pp_min_wall;
+    base= pp_body_length + pp_cup_h_walls;
     //Body
     union()
     {
-        translate([0, 0, pp_body_length + pp_min_wall])
+        translate([0, 0, base])
         cylinder(d= pp_cup_d1, h=nibm_nib_h, center= false);
         intersection()
         {
