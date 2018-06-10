@@ -4,7 +4,7 @@ include <push_pull_mechanics.scad>
 include <rough_handle.scad>
 
 // Which nib to use
-include <nibm_reform.scad>
+include <nibm_6noodlers.scad>
 
 //include <draft_view.scad>
 include <fine_view.scad>
