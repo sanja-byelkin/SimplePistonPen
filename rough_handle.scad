@@ -1,3 +1,5 @@
+include <slices.scad>
+
 module rough_handle_spiral (d=5, h=7, rough=1)
 {
     slc= round(360 / (asin(rough/(d)) * 2 * 3));
