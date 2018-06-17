@@ -1,4 +1,5 @@
 include <threads_w_cut.scad>
+include <threads_w_step.scad>
 include <slices.scad>
 include <push_pull_mechanics.scad>
 include <rough_handle.scad>
@@ -146,7 +147,7 @@ union(){
             translate([0, 0, pp_back_back_h - 0.01])
             cylinder(d=pp_screw_handle_d + 2 * pp_tollerance, h= pp_screw_handle_h + pp_tollerance + 0.02, center=false);
             translate([0, 0, pp_back_back_h + pp_screw_handle_h + pp_tollerance])
-            metric_thread_w_entry (diameter=pp_d1_1+ pp_back_tread_pitch*1.18 + pp_tread_d_tollerance, pitch=pp_back_tread_pitch, length= pp_back_thread2*pp_internal_thread_h_ratio + 0.01, internal= true, cut_top=true, cut_bottom=false);
+            thread_with_step(diameter=pp_d1_1+ pp_back_tread_pitch*1.18 + pp_tread_d_tollerance, pitch=pp_back_tread_pitch, length= pp_back_thread2*pp_internal_thread_h_ratio + 0.01, internal= true, cut_top=true, cut_bottom=false, step_bottom=false, step_to=pp_external_belt_d);
         }
     }
 }
@@ -169,13 +170,13 @@ union(){
               cylinder(d= pp_d1_1, h= pp_belt_with_thread_top, center=true);
             // upper thread
             translate([0, 0, -pp_back_thread1 - (pp_screw_h + pp_overlap_h)/2])
-            metric_thread_w_entry (diameter=pp_d1_1+ pp_back_tread_pitch*1.18, pitch=pp_back_tread_pitch, length= pp_back_thread1, , cut_top=true, cut_bottom= false);
+            thread_with_step(diameter=pp_d1_1+ pp_back_tread_pitch*1.18, pitch=pp_back_tread_pitch, length= pp_back_thread1, , cut_top=true, cut_bottom= false, step_bottom=true, step_to=pp_external_belt_d);
             // belt
             translate([0, 0, -pp_back_thread1 - pp_external_belt - (pp_screw_h + pp_overlap_h)/2])
             cylinder(d= pp_external_belt_d, h= pp_external_belt, center= false);
             //lower thread
             translate([0, 0, - pp_back_thread2 - pp_back_thread1 - pp_external_belt - (pp_screw_h + pp_overlap_h)/2])
-            metric_thread_w_entry (diameter=pp_d1_1+ pp_back_tread_pitch*1.18, pitch=pp_back_tread_pitch, length= pp_back_thread2, cut_top=false, cut_bottom=true);
+            thread_with_step(diameter=pp_d1_1+ pp_back_tread_pitch*1.18, pitch=pp_back_tread_pitch, length= pp_back_thread2, cut_top=false, cut_bottom=true, step_bottom=false, step_to=pp_external_belt_d);
         }
         translate([0, 0, - 1 - pp_belt_with_thread - pp_external_belt - pp_back_thread2 - (pp_screw_h + pp_overlap_h)/2])
         cylinder(d=pp_holder_border_d + pp_tollerance*2, h= pp_belt_with_thread + pp_external_belt + pp_back_thread2 + 2, center= false);
@@ -312,7 +313,7 @@ difference()
         translate([0, 0, - (pp_screw_h + pp_overlap_h)/2 - pp_back_thread1*pp_internal_thread_h_ratio -1])
         cylinder(d= pp_d, h= pp_screw_h*2 + pp_piston_head_h +  pp_back_thread1*pp_internal_thread_h_ratio + 1.01, center=false);
         translate([0, 0, - (pp_screw_h + pp_overlap_h)/2 - pp_back_thread1*(pp_internal_thread_h_ratio + 0.001)])
-        metric_thread_w_entry (diameter=pp_d1_1+ pp_back_tread_pitch*1.18 + pp_tread_d_tollerance, pitch=pp_back_tread_pitch, length= pp_back_thread1*(pp_internal_thread_h_ratio + 0.001), internal=true, cut_bottom=true, cut_top=false);
+        thread_with_step(diameter=pp_d1_1+ pp_back_tread_pitch*1.18 + pp_tread_d_tollerance, pitch=pp_back_tread_pitch, length= pp_back_thread1*(pp_internal_thread_h_ratio + 0.001), internal=true, cut_bottom=true, cut_top=false, step_bottom=true, step_to=pp_external_belt_d);
     }
 }
 
@@ -332,7 +333,7 @@ difference()
         cylinder(d= pp_cup_narrow_part_d, h= nibm_nib_h + 0.01, center= false);
         // Thread ower narrow cylinder to put top part on
         translate([0, 0, pp_body_length + pp_cup_h_walls])
-        metric_thread_w_entry (diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h, internal=false, cut_bottom=true, cut_top=true);
+        thread_with_step(diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h, internal=false, cut_bottom=true, cut_top=true, step_bottom=true, step_to=pp_cup_d1);
     }
     // Cut
     union()
@@ -384,7 +385,7 @@ difference()
             cylinder(d= pp_cup_narrow_part_d + pp_tollerance*2, h= nibm_nib_h + 0.02, center= false);
         // thread to connect lower part
         translate([0, 0, base -0.01])
-            metric_thread_w_entry (diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18 + pp_tread_d_tollerance, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h * pp_internal_thread_h_ratio + 0.02, internal=true, cut_bottom=true, cut_top=true);
+            thread_with_step(diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18 + pp_tread_d_tollerance, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h * pp_internal_thread_h_ratio + 0.02, internal=true, cut_bottom=true, cut_top=true, step_bottom=true, step_to=pp_cup_d1);
         // cut of clip
         translate([0, 0, base - (pp_cup_wide_part_h - pp_clip_gap) - 0.01])
         cylinder(d= pp_cup_d1+ 2* pp_clip_gap,
