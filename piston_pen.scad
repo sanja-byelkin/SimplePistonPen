@@ -6,18 +6,25 @@ include <rough_handle.scad>
 // Which nib to use
 include <nibm_6noodlers.scad>
 
+// Show/render parameters
 //include <draft_view.scad>
 include <fine_view.scad>
-pp_show_assemble= false;
+
+//What parts to construct
 pp_show_back1=true;
 pp_show_back2=true;
 pp_show_piston=true;
 pp_show_screw=true;
-pp_show_print_helper=false;
 pp_show_pins=true;
 pp_show_body=true;
 pp_show_cup1=true;
 pp_show_cup2=true;
+
+pp_show_print_helper=false;
+
+// How to place the parts
+pp_show_assemble= false;
+
 
 // diameter to fit all mechanisms
 pp_d= 9;
