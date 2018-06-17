@@ -56,6 +56,8 @@ pp_back_thread2=4;
 pp_external_belt=3;
 pp_external_belt_d= pp_d + pp_back_tread_pitch*1.18 + pp_min_wall*2 + pp_tread_d_tollerance;
 pp_back_back_h= pp_min_wall;
+// dangerous thing if thread on the back more loose that cup thread (back will stuck in the cup forever)
+pp_back_thread_for_cup= false;
 
 pp_screw_handle_d=7;
 pp_screw_handle_h=7;
@@ -78,12 +80,14 @@ pp_body_thread_starts=4;
 pp_body_thread_h=3;
 pp_boby_thread_pitch=0.75;
 pp_body_thread_size=1;
-pp_body_thread_interval= 0.1;
+pp_body_thread_interval= 30;
+pp_body_try_second_boby_thread= true;
 
 // Cup Parameters
-pp_cup_after_thread= 30;
+pp_cup_after_thread= 5;
 pp_cup_thread_pitch= 1;
 pp_cup_thread_h= 7;
+
 // Parameters of the clip
 pp_clip_gap=1;
 pp_clip_width= 4;
@@ -114,6 +118,10 @@ pp_cup_wide_part_h= pp_cup_after_thread + pp_body_thread_size + pp_body_thread_i
 pp_cup_narrow_part_d= nibm_nib_d + pp_min_wall * 2;
 pp_gap= pp_cup_d1 + 1;
 
+pp_back1_h_hole= pp_screw_handle_h + pp_tollerance + pp_back_thread2*pp_internal_thread_h_ratio;
+
+pp_body_second_boby_thread= (!pp_back_thread_for_cup &&pp_body_try_second_boby_thread && (pp_body_thread_interval >= pp_external_belt + pp_back1_h_hole + pp_back_back_h));
+
 echo("D:", pp_d1_1, pp_d1_2, pp_d2_1, pp_d2_2, pp_d3);
 echo("Belt:", pp_belt_with_thread_top, pp_belt_with_thread, pp_belt_with_thread_bottom);
 echo("Body length:", pp_body_length);
@@ -126,7 +134,13 @@ union(){
     difference()
     {
         translate([0, 0, pp_back_back_h - 0.01])
-        cylinder(d= pp_external_belt_d, h= pp_screw_handle_h + pp_tollerance + pp_back_thread2*pp_internal_thread_h_ratio + 0.01, center= false);
+        union() {
+            cylinder(d= pp_external_belt_d, h= pp_back1_h_hole + 0.01, center= false);
+            if (pp_back_thread_for_cup)
+            {
+                metric_thread_w_entry (diameter=pp_external_belt_d + pp_boby_thread_pitch*1.18, pitch=pp_boby_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
+            }
+        }
         union()
         {
             translate([0, 0, pp_back_back_h - 0.01])
@@ -285,6 +299,10 @@ difference()
         cylinder(d= pp_external_belt_d, h= pp_body_length, center=false);
         translate([0, 0, pp_body_length - pp_body_thread_h - pp_body_thread_interval])
         metric_thread_w_entry (diameter=pp_external_belt_d + pp_boby_thread_pitch*1.18, pitch=pp_boby_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
+        if (pp_body_second_boby_thread)
+        {
+            metric_thread_w_entry (diameter=pp_external_belt_d + pp_boby_thread_pitch*1.18, pitch=pp_boby_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
+        }
     }
     // Cut for piston mechanism
     union()
