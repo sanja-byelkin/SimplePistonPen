@@ -46,7 +46,7 @@ pp_rail_num=2;
 // number of screw rails  *2
 pp_screw_num=2;
 // Orings paremeters used in the piston
-pp_oring_inner_d=6.2;
+pp_oring_inner_d=5.3;
 pp_oring_num=2;
 pp_oring_d=2;
 
