@@ -24,7 +24,16 @@ pp_show_cup2=true;
 pp_show_print_helper=false;
 
 // How to place the parts
+// If pp_ready_for_print true
+//    than it will be presented redy for print
+//      (pp_show_assemble does not work in this case)
+//    otherwise everything will be turned and leveled
+//       as if it is assempled.
+// if pp_show_assemble true
+//    than everything will be "assempled" in one place
+//    otherwise it will be"exploded" view.
 pp_show_assemble= false;
+pp_ready_for_print= true;
 
 
 // diameter to fit all mechanisms
@@ -129,7 +138,7 @@ echo("Body length:", pp_body_length);
 
 // Back1
 if (pp_show_back1)
-translate ([pp_show_assemble ? 0 : pp_gap, pp_show_assemble ? 0 : pp_gap, - pp_back_back_h - pp_screw_handle_h - pp_tollerance - pp_back_thread2*pp_internal_thread_h_ratio - pp_back_thread1 - pp_external_belt - (pp_screw_h + pp_overlap_h)/2])
+translate ([pp_show_assemble ? 0 : pp_gap, pp_show_assemble ? 0 : pp_gap, pp_ready_for_print ? 0 : - pp_back_back_h - pp_screw_handle_h - pp_tollerance - pp_back_thread2*pp_internal_thread_h_ratio - pp_back_thread1 - pp_external_belt - (pp_screw_h + pp_overlap_h)/2])
 union(){
     cylinder(d= pp_external_belt_d, h= pp_back_back_h);
     difference()
@@ -154,7 +163,7 @@ union(){
 
 // Back2
 if (pp_show_back2)
-translate ([pp_show_assemble ? 0 : pp_gap, 0, 0])
+translate ([pp_show_assemble ? 0 : pp_gap, 0, pp_ready_for_print ? pp_back_thread2 + pp_back_thread1 + pp_external_belt + (pp_screw_h + pp_overlap_h)/2 : 0])
 union(){
     // Piston holder
     difference(){
@@ -191,6 +200,8 @@ pp_back_holder_pin_h + pp_tollerance*2], center=true);
 
 // Piston
 if (pp_show_piston)
+translate([0,0,pp_ready_for_print? (pp_screw_h + pp_overlap_h)/2 + pp_piston_borders*3 + pp_oring_num*pp_oring_d :0])
+rotate([pp_ready_for_print?180:0,0])
 union()
 {
     // Piston Boby
@@ -243,7 +254,7 @@ union()
 // Screw
 //
 if (pp_show_screw)
-translate ([pp_show_assemble ? 0 : - pp_gap, 0, 0])
+translate ([pp_show_assemble ? 0 : - pp_gap, 0, pp_ready_for_print ?pp_screw_handle_h + (pp_belt_with_thread_bottom + pp_external_belt + pp_back_thread2) + pp_back_borders*2 + (pp_back_holder_pin_h + pp_tollerance*2) + (pp_screw_h + pp_overlap_h)/2 : 0])
 union() {
     // Screw Screw
     push_pull_screw(d1= pp_d3 + pp_holding_step, d2= pp_d3, ratio=0.5, num= pp_screw_num, pitch=pp_pitch, h= pp_screw_h + pp_overlap_h);
@@ -275,7 +286,7 @@ union()
 
 // Pins for mechanism
 if (pp_show_pins)
-translate ([0, pp_show_assemble ? 0 : - pp_gap,  - pp_back_holder_pin_h/2 - (pp_screw_h + pp_overlap_h)/2 - pp_back_borders - pp_tollerance])
+translate ([0, pp_show_assemble ? 0 : - pp_gap, pp_ready_for_print ? pp_back_holder_pin_h/2 : - pp_back_holder_pin_h/2 - (pp_screw_h + pp_overlap_h)/2 - pp_back_borders - pp_tollerance])
 intersection()
 {
     cylinder(d= pp_d1_1, h= pp_back_holder_pin_h + 2, center=true);
@@ -291,7 +302,8 @@ intersection()
 
 // Body
 if (pp_show_body)
-translate ([0, pp_show_assemble ? 0 : pp_gap, 0])
+translate ([0, pp_show_assemble ? 0 : pp_gap, pp_ready_for_print ? pp_body_length - (pp_screw_h + pp_overlap_h)/2 - pp_back_thread1*pp_internal_thread_h_ratio : 0])
+rotate([pp_ready_for_print?180:0,0])
 difference()
 {
     translate([0, 0, - (pp_screw_h + pp_overlap_h)/2 - pp_back_thread1*pp_internal_thread_h_ratio])
@@ -319,7 +331,8 @@ difference()
 
 // Cup lower part
 if (pp_show_cup2)
-translate ([pp_show_assemble ? 0 : - pp_gap, pp_show_assemble ? 0 : pp_gap, - (pp_screw_h + pp_overlap_h)/2  - pp_back_thread1*pp_internal_thread_h_ratio] )
+translate ([pp_show_assemble ? 0 : - pp_gap, pp_show_assemble ? 0 : pp_gap, pp_ready_for_print ? pp_body_length + pp_cup_h_walls + nibm_nib_h: - (pp_screw_h + pp_overlap_h)/2  - pp_back_thread1*pp_internal_thread_h_ratio] )
+rotate([pp_ready_for_print?180:0,0])
 difference()
 {
     // External
@@ -355,7 +368,8 @@ difference()
 
 // Cup upper part and clip
 if (pp_show_cup1)
-    translate ([pp_show_assemble ? 0 : - pp_gap, pp_show_assemble ? 0 : - pp_gap, - (pp_screw_h + pp_overlap_h)/2  - pp_back_thread1*pp_internal_thread_h_ratio] )
+    translate ([pp_show_assemble ? 0 : - pp_gap, pp_show_assemble ? 0 : - pp_gap, pp_ready_for_print ? pp_body_length + pp_cup_h_walls + nibm_nib_h: - (pp_screw_h + pp_overlap_h)/2  - pp_back_thread1*pp_internal_thread_h_ratio])
+rotate([pp_ready_for_print?180:0,0])
 difference()
 {
     base= pp_body_length + pp_cup_h_walls;
