@@ -401,17 +401,3 @@ difference()
         h= 2*(pp_clip_gap + pp_clip_thickness) + 0.01, celter= false);
     }
 }
-//rails(num=2);
-//push_pull_screw();
-/*
-difference(){
-    cylinder(5,d=10,center=true);
-    cylinder(7,d=10-1.4,center=true);
-};
-translate([10.1,0,0])
-difference(){
-    cylinder(5,d=10,center=true);
-    cylinder(7,d=10-1.6,center=true);
-};
-cube([10,0.7,5],center=true);
-*/
