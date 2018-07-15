@@ -53,7 +53,9 @@ pp_min_wall= 0.7;
 //include <simple_penV1.scad>
 // Simple cylindric design with thread 30mm
 // from nib and other thread for cup posting
-include <simple_penV2.scad>
+//include <simple_penV2.scad>
+// Big pen
+include <big_penV3.scad>
 
 //
 // Setup in-place (comment out preset above)
@@ -64,12 +66,12 @@ include <simple_penV2.scad>
 // 9 is minimum for 0.4 nozzle 8 is absolut
 // minimum and it is fragile
 // Practically, it is o-rings outer diameter
-//pp_try_d= 9; // [8-60]
+//pp_try_d= 14.3; // [8-60]
 // number of o-rings
 //pp_oring_num=2; // [1-4]
 // Thicknes of the O-ring (diameter of cirle
 // which was turned to make torus of o-ring)
-//pp_oring_d=2; // [0.5-5]
+//pp_oring_d=2.5; // [0.5-5]
 // how tightly will o-rings fit (0.3 looks good)
 //pp_oring_compression=0.3; // [0.1-0.5]
 
@@ -130,7 +132,7 @@ include <simple_penV2.scad>
 // length of the thread
 //pp_body_thread_h=3; // [3-7]
 // pitch of the thread
-//pp_boby_thread_pitch=0.75; // [0.75-1.5]
+//pp_body_thread_pitch=0.75; // [0.75-1.5]
 // distance of between each thread turn
 // (should be more or equal of pitch)
 //pp_body_thread_size=1;
@@ -139,18 +141,28 @@ include <simple_penV2.scad>
 // comfort grip of the pen, so should be
 // before or after place where you hold
 // your fingers)
-//pp_body_thread_interval= 30; // [0-50]
+// (-1 - very end of nib module)
+//pp_body_thread_interval= -1; // [-1,0-50]
 // Try (if above parameter allow) to put thread
 // for posting pen cup on the other end of pen body
-//pp_body_try_second_boby_thread= true;
+//pp_body_try_second_body_thread= true;
+// Try to make thread step down
+//pp_body_try_thread_step_down=true;
+// Diameter of the section equal body diameter
+// minus this delta
+// (-1 min possible)
+//pp_body_section_delta=4; // [-1, 0-10]
+// Section barier width
+//pp_body_section_barier_w= 3; // [0-10]
+
 
 //
 // Cup Parameters
 //
 // how long will be cup after thread wich hold
 // the pen body
-//pp_cup_after_thread= 5; // [0-50]
-//
+//pp_cup_after_thread= 10; // [0-50]
+
 // Parameters of the thread which connect
 // two cup parts:
 // pitch
@@ -183,10 +195,23 @@ pp_piston_borders= pp_holding_step;
 
 
 
-
+pp_body_thread_interval_real= (pp_body_thread_interval == -1 ? (nibm_h - pp_body_thread_h - 0.01) : pp_body_thread_interval);
+pp_body_thread_step_down= pp_body_try_thread_step_down && (pp_body_thread_interval_real + pp_body_thread_h <= nibm_h);
 pp_d= max(pp_try_d, 8);
-pp_oring_inner_d= pp_d - (2 * pp_oring_d)  + pp_oring_compression ;
+pp_oring_inner_d= pp_d - (2 * pp_oring_d)  + pp_oring_compression;
 pp_external_belt_d= pp_d + pp_back_tread_pitch*1.18 + pp_min_wall*2 + pp_tread_d_tollerance;
+
+pp_body_section_maxd= (pp_body_thread_step_down ? pp_external_belt_d - pp_body_thread_pitch*1.8: pp_external_belt_d);
+pp_body_section_tryd= (pp_body_section_delta == -1) ? nibm_module_mind : (pp_body_section_maxd - pp_body_section_delta);
+pp_body_section_mind= max(pp_body_section_tryd, nibm_module_mind);
+pp_body_section_d= min(pp_body_section_mind + pp_body_section_barier_w/2, pp_body_section_maxd);
+pp_body_section_cone= min(nibm_h, pp_body_thread_interval_real);
+pp_body_section_cyl=((pp_body_section_cone < nibm_h)? (nibm_h - pp_body_section_cone) : 0);
+pp_body_section_barier_w_real= min(pp_body_section_barier_w, pp_body_section_cone/2);
+pp_body_thread_d= (pp_body_thread_step_down ? pp_external_belt_d : pp_external_belt_d + pp_body_thread_pitch*1.18);
+
+
+
 // Diameters ofouter/inner "cylinders" of piston mechanisms parts
 pp_d1_1= pp_d - pp_tollerance*2;
 pp_d1_2= pp_d1_1 - (pp_min_wall * 2 + pp_holding_step);
@@ -195,6 +220,7 @@ pp_d2_2= pp_d2_1 - (pp_min_wall * 2 + pp_holding_step );
 pp_d3= pp_d2_2 - pp_tollerance * 2;
 
 pp_holder_border_d= pp_d3 + pp_back_holder_pin_w*2 + pp_tollerance*2;
+pp_screw_handle_real_d= max(pp_screw_handle_d, pp_holder_border_d);
 
 pp_belt_with_thread= max(pp_back_thread1, pp_back_borders*2 + pp_back_holder_pin_h + pp_tollerance*2);
 pp_belt_with_thread_top= pp_belt_with_thread - pp_back_thread1;
@@ -204,16 +230,16 @@ pp_belt_with_thread_bottom= pp_belt_with_thread - (pp_back_borders*2 + pp_back_h
 pp_piston_head_h=pp_piston_borders*3 + pp_oring_num*pp_oring_d;
 pp_body_length= pp_screw_h*2 + pp_piston_head_h +   pp_back_thread1 * pp_internal_thread_h_ratio + nibm_h;
 
-pp_cup_d2= pp_external_belt_d + pp_boby_thread_pitch*1.18 + pp_tollerance*2;
+pp_cup_d2= pp_body_thread_d + pp_tollerance*2;
 pp_cup_d1= pp_cup_d2 + 2 * pp_min_wall;
 pp_cup_h_walls= pp_min_wall*1.5;
-pp_cup_wide_part_h= pp_cup_after_thread + pp_body_thread_size + pp_body_thread_interval +pp_cup_h_walls;
+pp_cup_wide_part_h= pp_cup_after_thread + pp_body_thread_size + pp_body_thread_interval_real + pp_cup_h_walls;
 pp_cup_narrow_part_d= nibm_nib_d + pp_min_wall * 2;
 pp_gap= pp_cup_d1 + 1;
 
 pp_back1_h_hole= pp_screw_handle_h + pp_tollerance + pp_back_thread2*pp_internal_thread_h_ratio;
 
-pp_body_second_boby_thread= (!pp_back_thread_for_cup &&pp_body_try_second_boby_thread && (pp_body_thread_interval >= pp_external_belt + pp_back1_h_hole + pp_back_back_h));
+pp_body_second_body_thread= (!pp_back_thread_for_cup && !pp_body_thread_step_down &&pp_body_try_second_body_thread && (pp_body_thread_interval_real >= pp_external_belt + pp_back1_h_hole + pp_back_back_h));
 
 echo("D:", pp_d1_1, pp_d1_2, pp_d2_1, pp_d2_2, pp_d3);
 echo("Belt:", pp_belt_with_thread_top, pp_belt_with_thread, pp_belt_with_thread_bottom);
@@ -231,13 +257,13 @@ union(){
             cylinder(d= pp_external_belt_d, h= pp_back1_h_hole + 0.01, center= false);
             if (pp_back_thread_for_cup)
             {
-                metric_thread_w_entry (diameter=pp_external_belt_d + pp_boby_thread_pitch*1.18, pitch=pp_boby_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
+                metric_thread_w_entry (diameter=pp_external_belt_d + pp_body_thread_pitch*1.18, pitch=pp_body_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
             }
         }
         union()
         {
             translate([0, 0, pp_back_back_h - 0.01])
-            cylinder(d=pp_screw_handle_d + 2 * pp_tollerance, h= pp_screw_handle_h + pp_tollerance + 0.02, center=false);
+            cylinder(d=pp_screw_handle_real_d + 2 * pp_tollerance, h= pp_screw_handle_h + pp_tollerance + 0.02, center=false);
             translate([0, 0, pp_back_back_h + pp_screw_handle_h + pp_tollerance])
             thread_with_step(diameter=pp_d1_1+ pp_back_tread_pitch*1.18 + pp_tread_d_tollerance, pitch=pp_back_tread_pitch, length= pp_back_thread2*pp_internal_thread_h_ratio + 0.01, internal= true, cut_top=true, cut_bottom=false, step_bottom=false, step_to=pp_external_belt_d);
         }
@@ -287,7 +313,7 @@ translate([0,0,pp_ready_for_print? (pp_screw_h + pp_overlap_h)/2 + pp_piston_bor
 rotate([pp_ready_for_print?180:0,0])
 union()
 {
-    // Piston Boby
+    // Piston Body
     difference(){
         overlap= 1;
         cyl_h= pp_screw_h + overlap*2;
@@ -315,12 +341,12 @@ union()
     // head body
     translate([0, 0, (pp_screw_h + pp_overlap_h)/2 + pp_piston_borders*1.5])
     cylinder(d=pp_oring_inner_d, h=pp_oring_num*pp_oring_d, center=false);
-    // Bottom border-boby transition
+    // Bottom border-body transition
     translate([0, 0, (pp_screw_h + pp_overlap_h)/2 + pp_piston_borders*1.5])
     cylinder(d1=pp_oring_inner_d + pp_oring_d*3/8, d2=pp_oring_inner_d, h=pp_oring_d/4, center=false);
     translate([0, 0, (pp_screw_h + pp_overlap_h)/2 + pp_piston_borders*1.5])
     cylinder(d1=pp_oring_inner_d + pp_oring_d/4, d2=pp_oring_inner_d, h= pp_oring_d*3/8, center=false);
-    //Top border-boby transition
+    //Top border-body transition
     translate([0, 0, (pp_screw_h + pp_overlap_h)/2 + pp_piston_borders*1.5 + pp_oring_num*pp_oring_d - pp_oring_d/4])
     cylinder(d2=pp_oring_inner_d + pp_oring_d*3/8, d1=pp_oring_inner_d, h=pp_oring_d/4, center=false);
     translate([0, 0, (pp_screw_h + pp_overlap_h)/2 + pp_piston_borders*1.5 + pp_oring_num*pp_oring_d - pp_oring_d*3/8])
@@ -350,7 +376,7 @@ union() {
     cylinder(d= pp_holder_border_d, h= pp_back_borders + pp_belt_with_thread_bottom + pp_external_belt + pp_back_thread2, center=false);
     // Screw handler
     translate([0, 0, -pp_screw_handle_h/2 - (pp_belt_with_thread_bottom + pp_external_belt + pp_back_thread2) - pp_back_borders*2 - (pp_back_holder_pin_h + pp_tollerance*2) - (pp_screw_h + pp_overlap_h)/2])
-    rough_handle(d= pp_screw_handle_d, h=pp_screw_handle_h, rough= pp_screw_handle_rough);
+    rough_handle(d= pp_screw_handle_real_d, h=pp_screw_handle_h, rough= pp_screw_handle_rough);
 };
 
 // Helps to print highest thing in the set
@@ -392,12 +418,28 @@ difference()
     translate([0, 0, - (pp_screw_h + pp_overlap_h)/2 - pp_back_thread1*pp_internal_thread_h_ratio])
     union()
     {
-        cylinder(d= pp_external_belt_d, h= pp_body_length, center=false);
-        translate([0, 0, pp_body_length - pp_body_thread_h - pp_body_thread_interval])
-        metric_thread_w_entry (diameter=pp_external_belt_d + pp_boby_thread_pitch*1.18, pitch=pp_boby_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
-        if (pp_body_second_boby_thread)
+        union()
         {
-            metric_thread_w_entry (diameter=pp_external_belt_d + pp_boby_thread_pitch*1.18, pitch=pp_boby_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
+            section_h= pp_body_section_cone + pp_body_section_cyl;
+            main_body_h= pp_body_length - section_h;
+            if (pp_body_section_barier_w_real)
+            {
+                translate([0,0,main_body_h + section_h - pp_body_section_barier_w_real - 0.01])
+                cylinder(d2= pp_body_section_d, d1= pp_body_section_mind, h= pp_body_section_barier_w_real/2 + 0.01, center=false);
+                translate([0,0,main_body_h + section_h - pp_body_section_barier_w_real/2 - 0.01])
+                cylinder(d1= pp_body_section_d, d2= pp_body_section_mind, h= pp_body_section_barier_w_real/2 + 0.01, center=false);
+            }
+            translate([0,0,main_body_h + pp_body_section_cyl - 0.01])
+            cylinder(d1= pp_body_section_maxd, d2=pp_body_section_mind, h= section_h - pp_body_section_barier_w_real - pp_body_section_cyl + 0.01, center=false);
+            translate([0,0,main_body_h - 0.01])
+            cylinder(d= pp_body_section_maxd, h=pp_body_section_cyl  + 0.01, center=false);
+            cylinder(d= pp_external_belt_d, h= main_body_h, center=false);
+        }
+        translate([0, 0, pp_body_length - pp_body_thread_h - pp_body_thread_interval_real])
+        metric_thread_w_entry (diameter= pp_body_thread_d, pitch=pp_body_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
+        if (pp_body_second_body_thread)
+        {
+            metric_thread_w_entry (diameter= pp_body_thread_d, pitch=pp_body_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
         }
     }
     // Cut for piston mechanism
@@ -429,7 +471,7 @@ difference()
         cylinder(d= pp_cup_narrow_part_d, h= nibm_nib_h + 0.01, center= false);
         // Thread ower narrow cylinder to put top part on
         translate([0, 0, pp_body_length + pp_cup_h_walls])
-        thread_with_step(diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h, internal=false, cut_bottom=true, cut_top=true, step_bottom=true, step_to=pp_cup_d1);
+        thread_with_step(diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h, internal=false, cut_bottom=true, cut_top=true, step_bottom=true, step_to=pp_cup_d1, pre_step= max(0.5,(pp_cup_d1 - (pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18))/2));
     }
     // Cut
     union()
@@ -438,14 +480,28 @@ difference()
         translate([0, 0, pp_body_length  - 0.01])
         cylinder(d= nibm_nib_d, h= nibm_nib_h + 0.01, center= false);
         // thread to hold the pen
-        translate([0, 0, pp_body_length - pp_body_thread_h - pp_body_thread_interval - 0.01])
-            metric_thread_w_entry (diameter=pp_external_belt_d + pp_boby_thread_pitch*1.18 + pp_tread_d_tollerance, pitch=pp_boby_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h + 0.01, internal= true, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
+        translate([0, 0, pp_body_length - pp_body_thread_h - pp_body_thread_interval_real - 0.01])
+            metric_thread_w_entry (diameter=pp_body_thread_d + pp_tread_d_tollerance, pitch=pp_body_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h + 0.01, internal= true, n_starts= pp_body_thread_starts, cut_bottom=true, cut_top=true);
         // place to get pen thread go through
-        translate([0, 0, pp_body_length - pp_body_thread_h - pp_body_thread_interval - pp_cup_after_thread - 0.01])
+        translate([0, 0, pp_body_length - pp_body_thread_h - pp_body_thread_interval_real - pp_cup_after_thread - 0.01])
         cylinder(d= pp_cup_d2, h= pp_cup_after_thread + 0.01, center= false);
         // place for pen body between nib and thread
-        translate([0, 0, pp_body_length - pp_body_thread_interval - 0.01])
-        cylinder(d= pp_external_belt_d + 2*pp_tollerance, h= pp_body_thread_interval + 0.01, center= false);
+        translate([0, 0, pp_body_length - pp_body_thread_interval_real - 0.01])
+        union()
+        {
+            cup_cyl=pp_body_thread_interval_real - pp_body_section_cone;
+            if (cup_cyl)
+                cylinder(d= pp_body_section_maxd + 2*pp_tollerance, h= cup_cyl, center= false);
+            translate([0,0,cup_cyl - 0.01])
+            cylinder(d2= pp_body_section_d + 2*pp_tollerance, d1= pp_body_section_maxd + 2*pp_tollerance, h= pp_body_thread_interval_real - cup_cyl -pp_body_section_barier_w_real/2  + 0.02, center= false);
+            if (pp_body_section_barier_w_real)
+            {
+                translate([0,0,pp_body_thread_interval_real - cup_cyl -pp_body_section_barier_w_real/2])
+                cylinder(d1= pp_body_section_d + 2*pp_tollerance, d2= pp_body_section_mind + 2*pp_tollerance, h= pp_body_section_barier_w_real/2 + 0.01, center=false);
+            }
+            
+            
+        }
     };
 }
 
@@ -482,7 +538,7 @@ difference()
             cylinder(d= pp_cup_narrow_part_d + pp_tollerance*2, h= nibm_nib_h + 0.02, center= false);
         // thread to connect lower part
         translate([0, 0, base -0.01])
-            thread_with_step(diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18 + pp_tread_d_tollerance, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h * pp_internal_thread_h_ratio + 0.02, internal=true, cut_bottom=true, cut_top=true, step_bottom=true, step_to=pp_cup_d1);
+            thread_with_step(diameter=pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18 + pp_tread_d_tollerance, pitch= pp_cup_thread_pitch, length= pp_cup_thread_h * pp_internal_thread_h_ratio + 0.02, internal=true, cut_bottom=true, cut_top=true, step_bottom=true, step_to=pp_cup_d1, pre_step= max(0.5,(pp_cup_d1 - (pp_cup_narrow_part_d + pp_cup_thread_pitch*1.18 + pp_tread_d_tollerance))/2));
         // cut of clip
         translate([0, 0, base - (pp_cup_wide_part_h - pp_clip_gap) - 0.01])
         cylinder(d= pp_cup_d1+ 2* pp_clip_gap,

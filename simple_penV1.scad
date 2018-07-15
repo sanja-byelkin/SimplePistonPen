@@ -71,7 +71,7 @@ pp_body_thread_starts=4; // [1-4]
 // length of the thread
 pp_body_thread_h=3; // [3-7]
 // pitch of the thread
-pp_boby_thread_pitch=0.75; // [0.75-1.5]
+pp_body_thread_pitch=0.75; // [0.75-1.5]
 // distance of between each thread turn
 // (should be more or equal of pitch)
 pp_body_thread_size=1;
@@ -80,10 +80,19 @@ pp_body_thread_size=1;
 // comfort grip of the pen, so should be
 // before or after place where you hold
 // your fingers)
-pp_body_thread_interval= 0.2; // [0-50]
+// (-1 - very end of nib module)
+pp_body_thread_interval= 0.2; // [-1,0-50]
 // Try (if above parameter allow) to put thread
 // for posting pen cup on the other end of pen body
-pp_body_try_second_boby_thread= false;
+pp_body_try_second_body_thread= false;
+// Try to make thread step down
+pp_body_try_thread_step_down=false;
+// Diameter of the section equal body diameter
+// minus this delta
+// (-1 min possible)
+pp_body_section_delta= 0; // [-1, 0-10]
+// Section barier width
+pp_body_section_barier_w= 0; // [0-10]
 
 //
 // Cup Parameters
