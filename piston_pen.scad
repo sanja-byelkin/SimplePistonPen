@@ -31,7 +31,7 @@ pp_show_print_helper=false;
 //       as if it is assempled.
 // if pp_show_assemble true
 //    than everything will be "assempled" in one place
-//    otherwise it will be"exploded" view.
+//    otherwise it will be "exploded" view.
 pp_show_assemble= false;
 pp_ready_for_print= true;
 
