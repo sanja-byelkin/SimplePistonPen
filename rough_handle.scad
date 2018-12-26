@@ -2,8 +2,8 @@ include <slices.scad>
 
 module rough_handle_spiral (d=5, h=7, rough=1)
 {
-    slc= round(360 / (asin(rough/(d)) * 2 * 3));
-    pitch= slc*3;
+    slc= round(360 / (asin(rough/(d)) * 4 * 3));
+    pitch= slc*5;
     dh= (rough*1.5)*sqrt(3)/2;
     linear_extrude(height= h, center= false, convexity=4 , twist= h/pitch*360 ,slices= h/pitch*slices(d/2))
     for (s= [0:slc-1])
