@@ -276,7 +276,8 @@ translate ([pp_show_assemble ? 0 : pp_gap, 0, pp_ready_for_print ? pp_back_threa
 union(){
     // Piston holder
     difference(){
-        cylinder(d=pp_d1_1, h= pp_screw_h + pp_overlap_h, center=true);
+        translate([0,0,-0.1])
+        cylinder(d=pp_d1_1, h= pp_screw_h + pp_overlap_h + 0.1, center=true);
         rails(d1 = pp_d1_2 + pp_holding_step, d2= pp_d1_2, ratio=0.5, h= pp_screw_h + pp_overlap_h + 2, num= pp_rail_num);
     };
     // Screw holder
