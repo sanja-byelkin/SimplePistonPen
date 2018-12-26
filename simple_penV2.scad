@@ -32,6 +32,8 @@ pp_pitch= 7; // [5-12]
 pp_rail_num=2; // [1-2]
 // number of screw rails * 2
 pp_screw_num=2; // [1-2]
+// make 45 degree pins for better printing
+pp_45_pin=false;
 
 //
 // Piston knob (handle) parameters
@@ -93,6 +95,9 @@ pp_body_try_thread_step_down=false;
 pp_body_section_delta= 0; // [-1, 0-10]
 // Section barier width
 pp_body_section_barier_w= 0; // [0-10]
+// Transition from diameter to thread [0-4]
+// 0 - autometic to make 45 degree cut
+pp_body_thread_pre_cone=0.5;
 
 //
 // Cup Parameters
@@ -114,3 +119,8 @@ pp_clip_gap=1; // [0.5 - 1.5]
 // Next two parameters determin how springy clip is
 pp_clip_width= 4;
 pp_clip_thickness= 3;
+
+//
+// Common parameters
+//
+pp_thread_angle=30;

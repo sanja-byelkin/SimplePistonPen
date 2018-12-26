@@ -1,7 +1,8 @@
 include <threads_w_cut.scad>
 
-module thread_with_step(diameter=8, pitch=1, length=3, internal=false, n_starts=1, thread_size=-1, groove=false, square=false, rectangle=0, angle=30, taper=0, leadin=0, leadfac=1.0, cut_top= false, cut_bottom= true, pre_step=0.5, cone_step=0.5, step_to=10, step_bottom=false)
+module thread_with_step(diameter=8, pitch=1, length=10, internal=false, n_starts=1, thread_size=-1, groove=false, square=false, rectangle=0, angle=30, taper=0, leadin=0, leadfac=1.0, cut_top= false, cut_bottom= true,pre_step= 0.5, cone_step=0, step_to=10, step_bottom=false)
 {
+    cone_step= (cone_step == 0 ? abs(step_to-diameter) : cone_step);
     union()
     {
         thread_h= length - pre_step - cone_step;
