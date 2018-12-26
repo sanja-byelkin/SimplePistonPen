@@ -7,7 +7,7 @@ module thread_with_step(diameter=8, pitch=1, length=3, internal=false, n_starts=
         thread_h= length - pre_step - cone_step;
         step_d= diameter + (internal ? 0 : -pitch);
         translate([0,0,(step_bottom ? 0 : thread_h + pre_step)])
-        cylinder(d1= step_bottom?step_to:step_d, d2= step_bottom?step_d:step_to,  h= pre_step);
+        cylinder(d1= step_bottom?step_to:step_d, d2= step_bottom?step_d:step_to,  h= cone_step);
         translate([0,0,(step_bottom ? cone_step : thread_h) - 0.01])
         cylinder(d= step_d, h= pre_step + 0.02);
         translate([0,0,(step_bottom ? cone_step + pre_step : 0)])
