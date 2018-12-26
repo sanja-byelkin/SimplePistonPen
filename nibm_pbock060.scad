@@ -11,7 +11,7 @@ nibm_nib_d= 7.8;
 nibm_nib_h= 17;
 
 //$fn=200;
-nibm_tollerance=0.2;
+nibm_tollerance=0.4;
 
 module nibm_cut(center= true)
 {
