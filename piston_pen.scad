@@ -365,10 +365,10 @@ union()
         translate([0, 0, -(screw_h + cyl_h)/2 + overlap])
         union() {
             ext_d= pp_d2_2 + pp_holding_step;
-            translate([0, 0, pp_overlap_h + overlap - pp_holding_step])
+            translate([0, 0, pp_overlap_h + overlap])
             cylinder(d1= pp_d2_2, d2= ext_d, h= pp_holding_step);
             translate([0, 0, cyl_h/2 + pp_overlap_h + overlap])
-            cylinder(d= ext_d, h= cyl_h, center=true);
+            cylinder(d= ext_d, h= cyl_h - pp_holding_step, center=true);
             translate([0, 0, + screw_h/2])
             rotate([0, 0, 360/pp_pitch*overlap])
             push_pull_screw(d1=ext_d, d2= pp_d2_2, ratio=0.5, num= pp_screw_num, pitch=pp_pitch, h= screw_h);
