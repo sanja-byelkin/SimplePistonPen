@@ -11,7 +11,7 @@ nibm_nib_d= 9;
 nibm_nib_h= 17;
 
 //$fn=200;
-nibm_tollerance=0.2;
+nibm_tollerance=0.4;
 
 module nibm_cut(center= true)
 {
@@ -23,9 +23,12 @@ module nibm_cut(center= true)
         translate([0,0,nibm_h- 18.3 - 0.01])
         cylinder(d=8+nibm_tollerance, h=18.3-0.5+0.02);
         translate([0,0, nibm_h- 18.3 -4 -0.01])
-        metric_thread_w_entry (diameter= 8 +nibm_tollerance, pitch= 0.6, length= 4 + 0.02, internal=true, cut_bottom=true, cut_top=false);
-       translate([0,0,- 0.01])
-        cylinder(d=6.6+nibm_tollerance, h= nibm_h -18.3 -4 +0.02); 
+        metric_thread_w_entry (diameter= 8 +nibm_tollerance, pitch= 0.65, length= 4 + 0.02, internal=true, cut_bottom=true, cut_top=false);
+         hh= (8-6.6)*2/3;
+         translate([0,0, nibm_h- 18.3 -4 -0.01 - hh- 0.01])
+            cylinder(d1=6.6+nibm_tollerance, d2= 8 +nibm_tollerance, h= hh + 0.02);
+            translate([0,0, -0.01])
+           cylinder(d=6.6+nibm_tollerance, h= nibm_h -18.3 -4 - hh +0.02);
     }
 }
 
