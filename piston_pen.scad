@@ -485,6 +485,7 @@ difference()
         union()
         {
             section_h= pp_body_section_cone + pp_body_section_cyl;
+            section_cyl_delta= section_h - (pp_body_thread_interval_real + pp_body_thread_h);
             main_body_h= pp_body_length - section_h;
             if (pp_body_section_barier_w_real)
             {
@@ -495,9 +496,9 @@ difference()
             }
             translate([0,0,main_body_h + pp_body_section_cyl - 0.01])
             cylinder(d1= pp_body_section_maxd, d2=pp_body_section_mind, h= section_h - pp_body_section_barier_w_real - pp_body_section_cyl + 0.01, center=false);
-            translate([0,0,main_body_h - 0.01])
-            cylinder(d= pp_body_section_maxd, h=pp_body_section_cyl  + 0.01, center=false);
-            cylinder(d= pp_external_belt_d, h= main_body_h, center=false);
+            translate([0,0, main_body_h + section_cyl_delta - 0.01])
+            cylinder(d= pp_body_section_maxd, h=pp_body_section_cyl - section_cyl_delta + 0.01, center=false);
+            cylinder(d= pp_external_belt_d, h= main_body_h + section_cyl_delta, center=false);
         }
         translate([0, 0, pp_body_length - pp_body_thread_h - pp_body_thread_interval_real])
         metric_thread_w_entry (diameter= pp_body_thread_d, pitch=pp_body_thread_pitch, thread_size= pp_body_thread_size, length= pp_body_thread_h, internal= false, n_starts= pp_body_thread_starts, angle=pp_thread_angle, cut_bottom=true, cut_top=true);
