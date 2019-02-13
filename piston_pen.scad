@@ -202,8 +202,6 @@ pp_back_holder_pin_h= pp_back_borders*2 + (pp_45_pin?pp_back_holder_pin_w:0);
 // Borders in piston
 pp_piston_borders= pp_holding_step;
 
-function thread_depth(pitch=1, angle=30, internal= false) =
-    pitch / (2 * tan(angle)) * (internal ? 0.625 : 5.3/8)*2;
 
 module pin45(w, l, h, angle, center)
 {
