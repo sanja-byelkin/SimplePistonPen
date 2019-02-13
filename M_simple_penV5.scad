@@ -6,20 +6,20 @@
 // 9 is minimum for 0.4 nozzle 8 is absolut
 // minimum and it is fragile
 // Practically, it is o-rings outer diameter
-pp_try_d= 9; // [8-60]
+pp_try_d= 10; // [8-60]
 // number of o-rings
 pp_oring_num=2; // [1-4]
 // Thicknes of the O-ring (diameter of cirle
 // which was turned to make torus of o-ring)
 pp_oring_d=2; // [0.5-5]
 // how tightly will o-rings fit (0.3 looks good)
-pp_oring_compression=0.3; // [0.1-0.5]
+pp_oring_compression=0.5; // [0.1-0.5]
 
 //
 // Parameters piston mechanism
 //
 // working length of the screw (piston travel)
-pp_screw_h= 20; // [5-40]
+pp_screw_h= 23; // [5-40]
 // "nonworking" part os the screw
 // (how long part of piston will be still
 // overlap with screw when piston pushed to far
@@ -41,9 +41,9 @@ pp_45_pin=true;
 // The handle diameter
 pp_screw_handle_d=7;
 // The handle length
-pp_screw_handle_h=7;
+pp_screw_handle_h=9;
 // The handle cuts depth
-pp_screw_handle_rough=0.5;
+pp_screw_handle_rough=0.3;
 
 //
 // Pen back parameters
@@ -71,28 +71,28 @@ pp_back_back_h= pp_min_wall;
 // starts
 pp_body_thread_starts=4; // [1-4]
 // length of the thread
-pp_body_thread_h=3; // [3-7]
+pp_body_thread_h=4; // [3-7]
 // pitch of the thread
-pp_body_thread_pitch=1.3; // [0.75-1.5]
+pp_body_thread_pitch=1.5; // [0.75-1.5]
 // distance of between each thread turn
 // (should be more or equal of pitch)
-pp_body_thread_size=1;
+pp_body_thread_size=1.6;
 // Distance from the body end with nib to the
 // cup thread start (should not prevent your
 // comfort grip of the pen, so should be
 // before or after place where you hold
 // your fingers)
 // (-1 - very end of nib module)
-pp_body_thread_interval= 0.2; // [-1,0-50]
+pp_body_thread_interval= 0.5; // [-1,0-50]
 // Try (if above parameter allow) to put thread
 // for posting pen cup on the other end of pen body
 pp_body_try_second_body_thread= false;
 // Try to make thread step down
-pp_body_try_thread_step_down=false;
+pp_body_try_thread_step_down=true;
 // Diameter of the section equal body diameter
 // minus this delta
 // (-1 min possible)
-pp_body_section_delta= 0; // [-1, 0-10]
+pp_body_section_delta=0.5; // [-1, 0-10]
 // Section barier width
 pp_body_section_barier_w= 0; // [0-10]
 // Transition from diameter to thread [0-4]
@@ -104,14 +104,14 @@ pp_body_thread_pre_cone=0;
 //
 // how long will be cup after thread wich hold
 // the pen body
-pp_cup_after_thread= 30; // [0-50]
+pp_cup_after_thread= 25; // [0-50]
 //
 // Parameters of the thread which connect
 // two cup parts:
 // pitch
-pp_cup_thread_pitch= 1.7; // [0.75-2]
+pp_cup_thread_pitch= 1.7; // [0.75-1.5]
 // length
-pp_cup_thread_h= 12;
+pp_cup_thread_h= 15;
 //
 // Parameters of the clip:
 // gap between clip and cup body

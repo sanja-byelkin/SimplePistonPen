@@ -6,8 +6,8 @@ include <rough_handle.scad>
 
 // Which nib to use
 //include <nibm_6noodlers.scad>
-//include <nibm_pbock250.scad>
-include <nibm_pbock060.scad>
+include <nibm_pbock250.scad>
+//include <nibm_pbock060.scad>
 //include <nibm_reform.scad>
 
 // Show/render parameters
@@ -53,12 +53,16 @@ pp_min_wall= 0.7;
 // Pre set pen styles
 //
 // Simple cylindric design with thread near nib
-include <simple_penV1.1.scad>
+// Small
+//include <simple_penV5.scad>
+// Medium
+include <M_simple_penV5.scad>
 // Simple cylindric design with thread 30mm
 // from nib and other thread for cup posting
 //include <simple_penV2.scad>
 // Big pen
 //include <big_penV3.scad>
+//include <big_penV4.scad>
 
 //
 // Setup in-place (comment out preset above)
