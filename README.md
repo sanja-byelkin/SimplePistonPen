@@ -17,3 +17,5 @@ diameter.
 Printer with 0.4mm nozzle and 0.1mm layer.
 
 After printing body should be polished inside to let o-rings slide by walls and be water-proof. Put o-rings over piston and use a bit of silicone grease to make piston and o-rings move better (prevent grease touching nib or feeder).
+
+You will need this library for threads to build it https://dkprojects.net/openscad-threads/
